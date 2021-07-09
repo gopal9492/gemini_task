@@ -5,11 +5,10 @@ const salt = bcrypt.genSaltSync(10);
 require('dotenv').config()
 
 function randomString(len) {
-    charSet =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    chars =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var randomString = '';
     for (var i = 0; i < len; i++) {
-        var randomPoz = Math.floor(Math.random() * charSet.length);
-        randomString += charSet.substring(randomPoz,randomPoz+1);
+        randomString += chars.charAt(Math.random() * chars.length)
     }
     return randomString;
 }
