@@ -71,18 +71,17 @@ exports.signin =async (req,res)=>{
          }
          
         else {
-            let accessToken=jwt.sign(input,process.env.ACCESS_TOKEN_KEY,{algorithm: "HS256",expiresIn:'60s'});
+            let accessToken=jwt.sign({user},process.env.ACCESS_TOKEN_KEY,{algorithm: "HS256",expiresIn:'60s'});
             return res.status(201).json({accessToken});
         }  
    })
 }
-
 exports.isAuth=function isAuthenticated(req, res, next) {
     if (typeof req.headers.authorization !== "undefined") {
         let token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.ACCESS_TOKEN_KEY, { algorithm: "HS256" }, (err, user) => {
             if (err) {  
-                res.status(500).json({ error: "Not Authorized" });
+                res.status(500).json({ error: "Not Authorized or may be token expired" });
                 throw new Error("Not Authorized");
             }
             return res.send(user);
@@ -111,7 +110,7 @@ exports.referid=(req,res)=>{
                 {$project:{firstname:1}}
             ]).exec(function (err,data){
                 if(err) throw err;
-                else res.send(data)
+                else res.send(data);
             })
             
         }
