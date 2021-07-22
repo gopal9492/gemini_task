@@ -16,25 +16,21 @@ function randomString(len) {
 //signup
 exports.signup = async (req, res) => {
     const input=req.body;
-    var response = {
-        statusCode: 1,
-        statusMessage: "success"
-    }
    
     const deviceid=req.body.deviceid || " " ;
     const appid=req.body.appid || " " ;
     const referid=randomString(7);
     const referredby=req.body.referredby || "" ;
-    const hashemail=await bcrypt.hashSync(input.email,salt);
+    
     const hashpsw=await  bcrypt.hashSync(input.password, salt);
 
-    const user=await usermodel.findOne({ email: hashemail }).then(user => {
+    const user=await usermodel.findOne({ email: input.email }).then(user => {
         if (user) {
            
             return res.send("the email is already registerd"+user);
         } 
     })
-    input.email=hashemail;
+    
     input.password=hashpsw;
     input.deviceid=deviceid;
     input.appid=appid;
@@ -59,8 +55,8 @@ exports.signup = async (req, res) => {
 
 exports.signin =async (req,res)=>{
     var input=req.body;
-    const hashemail=await bcrypt.hashSync(input.email,salt);
-      usermodel.findOne({ email:hashemail}).then(user => { 
+   
+      usermodel.findOne({ email:input.email}).then(user => { 
       
         if (!user){
             return res.send("the email id is wrong")
@@ -71,7 +67,9 @@ exports.signin =async (req,res)=>{
          }
          
         else {
-            let accessToken=jwt.sign({user},process.env.ACCESS_TOKEN_KEY,{algorithm: "HS256",expiresIn:'60s'});
+            // let accessToken=jwt.sign({user},process.env.ACCESS_TOKEN_KEY,{algorithm: "HS256",expiresIn:'60s'});
+            // return res.status(201).json({accessToken});
+            let accessToken=jwt.sign({user},"privatekey",{expiresIn:'90s'});
             return res.status(201).json({accessToken});
         }  
    })
@@ -79,12 +77,27 @@ exports.signin =async (req,res)=>{
 exports.isAuth=function isAuthenticated(req, res, next) {
     if (typeof req.headers.authorization !== "undefined") {
         let token = req.headers.authorization.split(" ")[1];
-        jwt.verify(token, process.env.ACCESS_TOKEN_KEY, { algorithm: "HS256" }, (err, user) => {
+        jwt.verify(token, "privatekey", (err, user) => {
             if (err) {  
                 res.status(500).json({ error: "Not Authorized or may be token expired" });
-                throw new Error("Not Authorized");
+                
             }
             return res.send(user);
+        });
+    } else {
+        res.status(500).json({ error: "Not Authorized" });
+        throw new Error("Not Authorized");
+    }
+}
+function isAuth(req, res, next) {
+    if (typeof req.headers.authorization !== "undefined") {
+        let token = req.headers.authorization.split(" ")[1];
+        jwt.verify(token, "privatekey", (err, user) => {
+            if (err) {  
+                res.status(500).json({ error: "Not Authorized or may be token plan expired" });
+                throw new Error("Not Authorized");
+            }
+            next()
         });
     } else {
         res.status(500).json({ error: "Not Authorized" });

@@ -2,13 +2,17 @@ const mongoose=require('mongoose');
 const Schema=mongoose.Schema;
 
 const userSchema= new Schema({
+    uId:{
+      tupe:String,
+      default:""
+    },
     firstname: {
       type: String,
-     
+      default:""
     },
     lastname: {
       type: String,
-     
+     default:""
     },
     email: {
       type: String,
@@ -17,19 +21,23 @@ const userSchema= new Schema({
     },
     password: {
       type: String,
-  
+      default:""
     },
     deviceid :{
       type:String,
+      default:""
     },
     appid:{
       type:String,
+      default:""
     },
     referid:{
         type: String,
+        default:""
     },
     referredby:{
         type:String,
+        default:""
     }
 
  },
