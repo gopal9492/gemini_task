@@ -3,6 +3,7 @@ const jwt= require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 require('dotenv').config()
+var ip = require('ip');
 
 function randomString(len) {
     chars =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -17,7 +18,7 @@ function randomString(len) {
 exports.signup = async (req, res) => {
     const input=req.body;
    
-    const deviceid=req.body.deviceid || " " ;
+    const deviceid=ip.address();
     const appid=req.body.appid || " " ;
     const referid=randomString(7);
     const referredby=req.body.referredby || "" ;
