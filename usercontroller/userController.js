@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 require('dotenv').config()
 var ip = require('ip');
+const { response } = require('express');
 
 function randomString(len) {
     chars =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -61,8 +62,11 @@ exports.createPassword=async(req,res)=>{
         if (!user){
             return res.send("the email id is wrong")
         }
-        else{
-            usermodel.findOneAndUpdate({email: req.params.email }, 
+        else if(!(user.password).length==0){
+            res.send("your already updated password check once")
+        }
+        else if(!(user.uId).length==0){
+            usermodel.findByIdAndUpdate(user.id, 
                 {password:hashpsw}, null, function (err, docs) {
                 if (err){
                     console.log(err)
@@ -71,9 +75,7 @@ exports.createPassword=async(req,res)=>{
                     console.log("Original Doc : ",docs);
                 }
             });
-            
         }
-
     })
 
 }
