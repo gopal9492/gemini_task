@@ -11,8 +11,7 @@ router.get(
   '/google/callback',
   passport.authenticate('google',{ failureRedirect: '/error' }),
   function(req, res) {
-    // Successful authentication, redirect success.
-    res.json({message:'google data is added..'});
+    res.send("welcome to dashboard");
   });
 
 router.get("/facebook", passport.authenticate("facebook",{ scope: ['profile','email'] }));

@@ -3,7 +3,7 @@ const Schema=mongoose.Schema;
 
 const userSchema= new Schema({
     uId:{
-      tupe:String,
+      type:String,
       default:""
     },
     firstname: {

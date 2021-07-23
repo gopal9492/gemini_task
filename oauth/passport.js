@@ -38,7 +38,7 @@ module.exports = function (passport,req,res) {
 
           if (user) {
             //If user present in our database.
-            console.log("user is already existed..")
+            return done(null,user)
            
           } else {
             console.log(newUser)

@@ -33,7 +33,7 @@ route.post('/signin',rateLimiterMiddleware,Router.signin);
 route.get('/referby/:id',Router.referredBy);
 route.get('/referid/:id',Router.referid);
 route.post('/secret',apiLimiter,Router.isAuth);
-
+route.post('/createpwd/:email',Router.createPassword);
 
 
 

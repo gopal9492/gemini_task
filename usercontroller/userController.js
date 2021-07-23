@@ -53,7 +53,30 @@ exports.signup = async (req, res) => {
    
 }
 //signin
+exports.createPassword=async(req,res)=>{
+    const password=req.body.password;
+    const hashpsw=await  bcrypt.hashSync(password, salt);
+    usermodel.findOne({ email:req.params.email}).then(user => { 
+      
+        if (!user){
+            return res.send("the email id is wrong")
+        }
+        else{
+            usermodel.findOneAndUpdate({email: req.params.email }, 
+                {password:hashpsw}, null, function (err, docs) {
+                if (err){
+                    console.log(err)
+                }
+                else{
+                    console.log("Original Doc : ",docs);
+                }
+            });
+            
+        }
 
+    })
+
+}
 exports.signin =async (req,res)=>{
     var input=req.body;
    
