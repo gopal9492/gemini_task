@@ -7,14 +7,16 @@ const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 const apiLimiter = rateLimit({
     windowMs: 3 * 60 * 1000, 
-    max: 3,
+    max: 0,
     message: "Too many time your logined, please try again after 3 mins"
   });
  
   const rateLimiter = new RateLimiterMemory(
   {
-    points: 2,
-    duration: 60, 
+
+    points: 3,
+    duration: 300, 
+    blockDuration: 3*60 * 60,
   });
   
   const rateLimiterMiddleware = (req, res, next) => {
@@ -24,7 +26,9 @@ const apiLimiter = rateLimit({
         next();
       })
       .catch((rejRes) => {
-        res.status(429).send('too many request wait 1 mins');
+        apiLimiter
+        res.status(429).send('too many request your account paused wait 3 mins it will open');
+        
       });
   };
 
